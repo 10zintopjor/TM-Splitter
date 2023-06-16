@@ -3,8 +3,7 @@ from pathlib import Path
 from openpecha.github_utils import github_publish
 import os 
 import csv
-from datetime import datetime
-from github import RateLimitExceededException
+from github.GithubException import GithubException
 import time
 
 token = os.getenv("GITHUB_TOKEN")
@@ -46,16 +45,16 @@ def create_tm_repo(file):
             not_includes=[],
             token = token
         )
-    except RateLimitExceededException as e:
-        # Get the time at which the rate limit will reset
-        reset_time = datetime.fromtimestamp(int(e.raw_headers.get("X-RateLimit-Reset")))
+    except GithubException as e:
+        if e.status == 403:
+            reset_time = int(e.headers.get("X-RateLimit-Reset"))
+            current_time = int(time.time())
+            wait_time = max(0, reset_time - current_time)
+            print(f"Rate limit exceeded. Retrying in {wait_time} seconds...")
+            time.sleep(wait_time)
+        else:
+            print("Unhandled GithubException:", e)
 
-        # Calculate the time to wait before retrying the API call
-        wait_time = reset_time - datetime.now()
-
-        # Wait until the rate limit resets
-        print(f"Rate limit exceeded. Waiting {wait_time} before retrying...")
-        time.sleep(wait_time.total_seconds())
     log(f"TM{uuid}_LH","tm.csv")
 
 
@@ -69,18 +68,32 @@ def create_tp_repo(file):
     Path(en_repo_path).mkdir()
     Path(f"{bo_repo_path}/bo.txt").write_text(bo_text)
     Path(f"{en_repo_path}/en.txt").write_text(en_text)
-    github_publish(path=bo_repo_path,org="MonlamAI",not_includes=[],token=token)
-    github_publish(path=en_repo_path,org="MonlamAI",not_includes=[],token=token)
+    try:
+        github_publish(path=bo_repo_path,org="MonlamAI",not_includes=[],token=token)
+        github_publish(path=en_repo_path,org="MonlamAI",not_includes=[],token=token)
+    except GithubException as e:
+        if e.status == 403:
+            reset_time = int(e.headers.get("X-RateLimit-Reset"))
+            current_time = int(time.time())
+            wait_time = max(0, reset_time - current_time)
+            print(f"Rate limit exceeded. Retrying in {wait_time} seconds...")
+            time.sleep(wait_time)
+        else:
+            print("Unhandled GithubException:", e)
     log(f"BO{uuid}_LH","tp.csv")
     log(f"EN{uuid}_LH","tp.csv")
 
 
 
 def main(home_dir):
+    do = False
     files  = get_pairs(home_dir)
     for file in files:
-        create_tm_repo(file)
-        break
+        if file.as_posix() == "TM_lotsawa_house/TM02646":
+            do = True 
+        if do:
+            create_tm_repo(file)
+
 
 if __name__ == "__main__":
     path = "TM_lotsawa_house"
