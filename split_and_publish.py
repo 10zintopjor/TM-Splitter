@@ -3,8 +3,7 @@ from pathlib import Path
 from openpecha.github_utils import github_publish
 import os 
 import csv
-from github.GithubException import GithubException
-import time
+
 
 token = os.getenv("GITHUB_TOKEN")
 home_path = "data"
@@ -38,22 +37,12 @@ def create_tm_repo(file):
     Path(repo_path).mkdir()
     Path(f"{repo_path}/bo.txt").write_text(bo_text)
     Path(f"{repo_path}/en.txt").write_text(en_text)
-    try:
-        github_publish(
-            path=repo_path,
-            org="MonlamAI",
-            not_includes=[],
-            token = token
-        )
-    except GithubException as e:
-        if e.status == 403:
-            reset_time = int(e.headers.get("X-RateLimit-Reset"))
-            current_time = int(time.time())
-            wait_time = max(0, reset_time - current_time)
-            print(f"Rate limit exceeded. Retrying in {wait_time} seconds...")
-            time.sleep(wait_time)
-        else:
-            print("Unhandled GithubException:", e)
+    github_publish(
+        path=repo_path,
+        org="MonlamAI",
+        not_includes=[],
+        token = token
+    )
 
     log(f"TM{uuid}_LH","tm.csv")
 
@@ -68,18 +57,9 @@ def create_tp_repo(file):
     Path(en_repo_path).mkdir()
     Path(f"{bo_repo_path}/bo.txt").write_text(bo_text)
     Path(f"{en_repo_path}/en.txt").write_text(en_text)
-    try:
-        github_publish(path=bo_repo_path,org="MonlamAI",not_includes=[],token=token)
-        github_publish(path=en_repo_path,org="MonlamAI",not_includes=[],token=token)
-    except GithubException as e:
-        if e.status == 403:
-            reset_time = int(e.headers.get("X-RateLimit-Reset"))
-            current_time = int(time.time())
-            wait_time = max(0, reset_time - current_time)
-            print(f"Rate limit exceeded. Retrying in {wait_time} seconds...")
-            time.sleep(wait_time)
-        else:
-            print("Unhandled GithubException:", e)
+    github_publish(path=bo_repo_path,org="MonlamAI",not_includes=[],token=token)
+    github_publish(path=en_repo_path,org="MonlamAI",not_includes=[],token=token)
+
     log(f"BO{uuid}_LH","tp.csv")
     log(f"EN{uuid}_LH","tp.csv")
 
