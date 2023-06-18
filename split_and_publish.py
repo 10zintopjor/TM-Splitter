@@ -4,19 +4,18 @@ from openpecha.github_utils import github_publish
 import os 
 import csv
 import time
-
+import random
+import string
 
 token = os.getenv("GITHUB_TOKEN")
 home_path = "data"
 
 def get_four_digit_uuid():
-    # Generate a UUID4 (random) and convert it to uppercase
-    uuid_str = str(uuid.uuid4()).upper()
-    
-    # Extract the first four characters from the UUID
-    four_digit_uuid = uuid_str[:4]
-    
-    return four_digit_uuid
+    # Define the characters to choose from
+    characters = string.ascii_uppercase + string.digits
+    # Generate a random ID
+    random_id = ''.join(random.choices(characters, k=4))
+    return random_id
 
 
 def get_pairs(main_dir):
