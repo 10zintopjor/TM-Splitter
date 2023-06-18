@@ -11,9 +11,7 @@ token = os.getenv("GITHUB_TOKEN")
 home_path = "data"
 
 def get_four_digit_uuid():
-    # Define the characters to choose from
     characters = string.ascii_uppercase + string.digits
-    # Generate a random ID
     random_id = ''.join(random.choices(characters, k=4))
     return random_id
 
@@ -67,10 +65,14 @@ def create_tp_repo(file):
 
 def main(home_dir):
     files  = get_pairs(home_dir)
+    do = False
     for file in files:
-        print(file)
-        create_tm_repo(file)
-        time.sleep(20)
+        if file == "TM_lotsawa_house/TM00466":
+            do = True
+        if do:    
+            print(file)
+            create_tm_repo(file)
+            time.sleep(20)
 
 
 if __name__ == "__main__":
