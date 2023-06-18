@@ -3,6 +3,7 @@ from pathlib import Path
 from openpecha.github_utils import github_publish
 import os 
 import csv
+import time
 
 
 token = os.getenv("GITHUB_TOKEN")
@@ -66,13 +67,11 @@ def create_tp_repo(file):
 
 
 def main(home_dir):
-    do = False
     files  = get_pairs(home_dir)
     for file in files:
-        if file.as_posix() == "TM_lotsawa_house/TM02646":
-            do = True 
-        if do:
-            create_tm_repo(file)
+        print(file)
+        create_tm_repo(file)
+        time.sleep(20)
 
 
 if __name__ == "__main__":
