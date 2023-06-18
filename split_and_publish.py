@@ -21,7 +21,7 @@ def get_four_digit_uuid():
 
 def get_pairs(main_dir):
     files = list(Path(main_dir).iterdir())
-    return files 
+    return sorted(files) 
 
 
 def log(id, csv_file):
