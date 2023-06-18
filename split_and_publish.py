@@ -67,7 +67,7 @@ def main(home_dir):
     files  = get_pairs(home_dir)
     do = False
     for file in files:
-        if file == "TM_lotsawa_house/TM00466":
+        if file.as_posix() == "TM_lotsawa_house/TM00466":
             do = True
         if do:    
             print(file)
