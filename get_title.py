@@ -35,8 +35,8 @@ if __name__ == "__main__":
     with open('tm.txt', 'r') as file:
         repos = [line.strip() for line in file]
         for repo in repos:
-            bo_path = f"./{repo}/bo.txt"
-            en_path = f"./{repo}/en.txt"        
+            bo_path = "bo.txt"
+            en_path = "en.txt"        
             bo_text,en_text = get_contents(g, repo,bo_path,en_path)
             bo_title = bo_text.split('\n')[0]
             en_title = en_text.split('\n')[0]
