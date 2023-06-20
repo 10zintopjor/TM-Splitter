@@ -4,6 +4,12 @@ from github import Github
 
 
 def get_contents(g, repo_name,bo_path,en_path):
+    repo = g.get_repo(f"MonlamAI/{repo_name}")
+    bo_contents = repo.get_contents(bo_path)
+    en_contents = repo.get_contents(en_path)
+    bo_text = bo_contents.decoded_content.decode()
+    en_text = en_contents.decoded_content.decode()
+    return bo_text,en_text
     try:
         repo = g.get_repo(f"MonlamAI/{repo_name}")
         bo_contents = repo.get_contents(bo_path)
