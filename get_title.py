@@ -1,7 +1,7 @@
 import csv
 import os
 from github import Github 
-
+import time
 
 def get_contents(g, repo_name,bo_path,en_path):
     try:
@@ -36,6 +36,7 @@ if __name__ == "__main__":
             bo_title = bo_text.split('\n')[0]
             en_title = en_text.split('\n')[0]
             log(repo,bo_title,en_title)
+            time.sleep(3)
             
 
     
