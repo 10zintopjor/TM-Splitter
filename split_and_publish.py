@@ -63,10 +63,14 @@ def create_tp_repo(file):
 
 def main(home_dir):
     files  = get_pairs(home_dir)
+    do = False
     for file in files:
-        print(file)
-        create_tp_repo(file)
-        time.sleep(20)
+        if file.as_posix() == "lotsawa_house_text_pairs/TM00006":
+            do = True
+        if do:    
+            print(file)
+            create_tp_repo(file)
+            time.sleep(20)
 
 
 if __name__ == "__main__":
