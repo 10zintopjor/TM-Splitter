@@ -21,10 +21,10 @@ def get_pairs(main_dir):
     return sorted(files) 
 
 
-def log(id, csv_file):
+def log(row, csv_file):
     with open(csv_file, 'a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([id])
+        writer.writerow(row)
 
 
 def create_tm_repo(file):
@@ -57,24 +57,18 @@ def create_tp_repo(file):
     Path(f"{en_repo_path}/en.txt").write_text(en_text)
     github_publish(path=bo_repo_path,org="MonlamAI",not_includes=[],token=token)
     github_publish(path=en_repo_path,org="MonlamAI",not_includes=[],token=token)
-
-    log(f"BO{uuid}_LH","tp.csv")
-    log(f"EN{uuid}_LH","tp.csv")
-
+    row = [f"EN{uuid}_LH",f"BO{uuid}_LH",en_text.split('\n')[0],bo_text.split('\n')[0]]
+    log(row,"tp.csv")
 
 
 def main(home_dir):
     files  = get_pairs(home_dir)
-    do = False
     for file in files:
-        if file.as_posix() == "TM_lotsawa_house/TM00466":
-            do = True
-        if do:    
-            print(file)
-            create_tm_repo(file)
-            time.sleep(20)
+        print(file)
+        create_tp_repo(file)
+        time.sleep(20)
 
 
 if __name__ == "__main__":
-    path = "TM_lotsawa_house"
+    path = "lotsawa_house_text_pairs"
     main(path)
